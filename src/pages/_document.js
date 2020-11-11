@@ -1,0 +1,71 @@
+import Document, {
+    Html, Head, Main, NextScript,
+  } from 'next/document';
+import React from 'react';
+import { ServerStyleSheet } from 'styled-components';
+
+
+
+export default class MyDocument extends Document {
+    static async getInitialProps(ctx) {
+      const sheet = new ServerStyleSheet();
+      const originalRenderPage = ctx.renderPage;
+  
+      try {
+        ctx.renderPage = () => originalRenderPage({
+          enhanceApp: (App) => (props) => sheet.collectStyles(<App {...props} />),
+        });
+  
+        const initialProps = await Document.getInitialProps(ctx);
+        return {
+          ...initialProps,
+          styles: (
+            <>
+              {initialProps.styles}
+              {sheet.getStyleElement()}
+            </>
+          ),
+        };
+      } finally {
+        sheet.seal();
+      }
+    }
+  
+    render() {
+      return (
+        <Html lang="fr">
+          <Head>
+
+      <meta charSet="utf-8" />
+
+      <meta
+        name="description"
+        content="Online tetris game"
+      />
+
+      <meta
+        content="multiplayer game"
+        key="ogtitle"
+        property="og:title"
+      />
+      <meta property="og:type" content={"webApp"} key="ogtype" />
+      {/* <meta property="og:image" content="https://i.ibb.co/bK384Gm/miniature.png" key="ogimage" /> */}
+      <meta property="og:url" content={"ogURL"} key="ogurl" />
+      <meta
+        key="description"
+        property="og:description"
+        content="multijoueur tetris  "
+      />
+
+      {/* <link rel="icon" href="/logoWhis.svg" /> */}
+    </Head>
+
+          <body>
+            <Main />
+            <NextScript />
+          </body>
+        </Html>
+      );
+    }
+  }
+  
